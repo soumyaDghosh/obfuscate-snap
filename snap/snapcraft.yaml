@@ -62,7 +62,8 @@ parts:
     override-pull: |
       craftctl default
       sed 's|Icon=@icon@|Icon=$SNAP/usr/share/icons/hicolor/scalable/apps/com.belmoussaoui.Obfuscate.svg|' data/com.belmoussaoui.Obfuscate.desktop.in.in
-    parse-info: [usr/share/metainfo/com.belmoussaoui.Obfuscate.metainfo.xml]
+    parse-info:
+      - $SNAP/usr/share/metainfo/com.belmoussaoui.Obfuscate.metainfo.xml
     organize:
       snap/obfuscate/current/usr: usr
   cleanup:
