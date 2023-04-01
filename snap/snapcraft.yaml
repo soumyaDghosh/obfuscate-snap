@@ -29,7 +29,6 @@ parts:
     override-pull: |
       craftctl default
       sed -e 's/-W\(format-nonliteral\)\b/-Wno-\1/g' -i meson.build
-      patch -p1 < $CRAFT_PROJECT_DIR/patches/style-manager-Support-Yaru-accent-colors.patch
   rustup:
     plugin: nil
     build-packages: [wget]
