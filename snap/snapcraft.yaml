@@ -29,6 +29,8 @@ parts:
     override-pull: |
       craftctl default
       sed -e 's/-W\(format-nonliteral\)\b/-Wno-\1/g' -i meson.build
+    stage:
+      - -usr/include
   rustup:
     plugin: nil
     build-packages: [wget]
