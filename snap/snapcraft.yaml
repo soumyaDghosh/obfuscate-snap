@@ -11,6 +11,25 @@ grade: devel # must be 'stable' to release into candidate/stable channels
 confinement: devmode # use 'strict' once you have the right plugs and slots
 compression: lzo
 parts:
+  libadwaita:
+    after: [rustup]
+    source: https://gitlab.gnome.org/GNOME/libadwaita.git
+    source-tag: '1.3.1'
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - -Doptimization=3
+      - -Ddebug=true
+      - -Dintrospection=enabled
+      - -Dvapi=true
+      - -Dtests=false
+      - -Dexamples=false
+    build-packages:
+      - sassc
+    override-pull: |
+      craftctl default
+      sed -e 's/-W\(format-nonliteral\)\b/-Wno-\1/g' -i meson.build
+      patch -p1 < $CRAFT_PROJECT_DIR/patches/style-manager-Support-Yaru-accent-colors.patch
   rustup:
     plugin: nil
     build-packages: [wget]
@@ -30,7 +49,7 @@ parts:
     override-prime: |
       echo 'Skip Prime'
   obfuscate:
-    after: [rustup]
+    after: [rustup, libadwaita]
     # See 'snapcraft plugins'
     plugin: meson
     source: https://gitlab.gnome.org/World/obfuscate.git
@@ -48,6 +67,7 @@ parts:
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - obfuscate
+      - libadwaita
       - rustup
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
