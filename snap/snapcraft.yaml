@@ -13,6 +13,31 @@ grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 compression: lzo
 parts:
+  glib:
+    source: https://gitlab.gnome.org/GNOME/glib.git
+    source-tag: '2.76.1'
+# ext:updatesnap
+#   version-format:
+#     ignore-odd-minor: true
+    source-depth: 1
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - -Doptimization=3
+      - -Ddebug=true
+    build-environment: *buildenv
+    override-pull: |
+      set -eux
+      craftctl default
+      patch -p1 < $CRAFT_PROJECT_DIR/patches/check-for-snap-plugs-before-accessing-portals.patch
+    override-build: |
+      set -eux
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
+      cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
+    build-packages:
+      - libmount-dev
+
 #  libadwaita:
 #    after: [rustup]
 #    source: https://gitlab.gnome.org/GNOME/libadwaita.git
@@ -65,9 +90,6 @@ parts:
 #      - PKG_CONFIG_PATH: $CRAFT_STAGE/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/share/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
     meson-parameters:
       - --prefix=/snap/obfuscate/current/usr
-    override-pull: |
-      craftctl default
-      sed 's|Icon=@icon@|Icon=$SNAP/usr/share/icons/hicolor/scalable/apps/com.belmoussaoui.Obfuscate.svg|' data/com.belmoussaoui.Obfuscate.desktop.in.in
     organize:
       snap/obfuscate/current/usr: usr
     parse-info:
