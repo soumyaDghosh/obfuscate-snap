@@ -25,7 +25,6 @@ parts:
       - --prefix=/usr
       - -Doptimization=3
       - -Ddebug=true
-    build-environment: *buildenv
     override-pull: |
       set -eux
       craftctl default
