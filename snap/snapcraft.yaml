@@ -25,10 +25,6 @@ parts:
       - --prefix=/usr
       - -Doptimization=3
       - -Ddebug=true
-    override-pull: |
-      set -eux
-      craftctl default
-      patch -p1 < $CRAFT_PROJECT_DIR/patches/check-for-snap-plugs-before-accessing-portals.patch
     override-build: |
       set -eux
       craftctl default
