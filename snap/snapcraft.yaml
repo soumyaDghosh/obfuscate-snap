@@ -14,6 +14,7 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 compression: lzo
 parts:
   glib:
+    after: [gobject-introspection]
     source: https://gitlab.gnome.org/GNOME/glib.git
     source-tag: '2.76.1'
 # ext:updatesnap
@@ -32,6 +33,27 @@ parts:
       cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
     build-packages:
       - libmount-dev
+  gobject-introspection:
+    source: https://gitlab.gnome.org/GNOME/gobject-introspection.git
+    source-tag: '1.76.1'
+# ext:updatesnap
+#   version-format:
+#     ignore-odd-minor: true
+    source-depth: 1
+    plugin: meson
+    meson-parameters:
+      - --prefix=/usr
+      - -Doptimization=3
+      - -Ddebug=true
+      - -Dgtk_doc=false
+    override-build: |
+      set -eux
+      craftctl default
+      sed -i "s#\([\"\']\)/usr/\([^\"\']*\)#os.environ.get\('CRAFT_STAGE'\) + \1/usr/\2#g" $CRAFT_PART_INSTALL/usr/bin/g-ir-scanner
+    build-packages:
+      - python3-dev
+      - bison
+      - flex
 
 #  libadwaita:
 #    after: [rustup]
@@ -54,7 +76,7 @@ parts:
 #    stage:
 #      - -usr/include
   rustup:
-    after: [glib]
+    after: [glib, gobject-introspection]
     plugin: nil
     build-packages: [wget]
     build-environment:
@@ -73,7 +95,7 @@ parts:
     override-prime: |
       echo 'Skip Prime'
   obfuscate:
-    after: [rustup, glib]
+    after: [rustup, glib, gobject-introspection]
     # See 'snapcraft plugins'
     plugin: meson
     source: https://gitlab.gnome.org/World/obfuscate.git
@@ -95,6 +117,7 @@ parts:
       - obfuscate
       - glib
       - rustup
+      - gobject-introspection
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
       - gnome-42-2204
