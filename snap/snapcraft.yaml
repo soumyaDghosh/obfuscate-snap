@@ -25,7 +25,6 @@ parts:
     meson-parameters:
       - --prefix=/usr
       - -Doptimization=3
-      - -Ddebug=true
     override-build: |
       set -eux
       craftctl default
@@ -33,28 +32,6 @@ parts:
       cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
     build-packages:
       - libmount-dev
-  gobject-introspection:
-    source: https://gitlab.gnome.org/GNOME/gobject-introspection.git
-    source-tag: '1.76.1'
-# ext:updatesnap
-#   version-format:
-#     ignore-odd-minor: true
-    source-depth: 1
-    plugin: meson
-    meson-parameters:
-      - --prefix=/usr
-      - -Doptimization=3
-      - -Ddebug=true
-      - -Dgtk_doc=false
-    override-build: |
-      set -eux
-      craftctl default
-      sed -i "s#\([\"\']\)/usr/\([^\"\']*\)#os.environ.get\('CRAFT_STAGE'\) + \1/usr/\2#g" $CRAFT_PART_INSTALL/usr/bin/g-ir-scanner
-    build-packages:
-      - python3-dev
-      - bison
-      - flex
-
 #  libadwaita:
 #    after: [rustup]
 #    source: https://gitlab.gnome.org/GNOME/libadwaita.git
