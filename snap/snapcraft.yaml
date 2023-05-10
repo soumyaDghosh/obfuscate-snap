@@ -16,7 +16,6 @@ confinement: strict # use 'strict' once you have the right plugs and slots
 compression: lzo
 parts:
   glib:
-    after: [gobject-introspection]
     source: https://gitlab.gnome.org/GNOME/glib.git
     source-tag: '2.76.1'
 # ext:updatesnap
@@ -55,7 +54,7 @@ parts:
 #    stage:
 #      - -usr/include
   rustup:
-    after: [glib, gobject-introspection]
+    after: [glib]
     plugin: nil
     build-packages: [wget]
     build-environment:
@@ -74,7 +73,7 @@ parts:
     override-prime: |
       echo 'Skip Prime'
   obfuscate:
-    after: [rustup, glib, gobject-introspection]
+    after: [rustup, glib]
     # See 'snapcraft plugins'
     plugin: meson
     source: https://gitlab.gnome.org/World/obfuscate.git
@@ -96,11 +95,10 @@ parts:
       - obfuscate
       - glib
       - rustup
-      - gobject-introspection
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
       - gnome-42-2204
-      - gnome-42-2204-sdk
+      - gtk-common-themes
       - core22
     override-prime: |
       set -eux
