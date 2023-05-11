@@ -26,6 +26,7 @@ parts:
     meson-parameters:
       - --prefix=/usr
       - -Doptimization=3
+      - -Dtests=false
     override-build: |
       set -eux
       craftctl default
