@@ -22,10 +22,6 @@ jobs:
       id: build
       with:
         architecture: ${{ matrix.architecture }}
-    - uses: diddlesnaps/snapcraft-review-tools-action@v1
-      with:
-        snap: ${{ steps.build.outputs.snap }}
-        slots: ./snap/local/slots-declaration.json
     - uses: actions/upload-artifact@v3
       with:
         name: obfuscate-snap
