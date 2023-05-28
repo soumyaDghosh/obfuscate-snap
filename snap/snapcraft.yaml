@@ -15,25 +15,25 @@ grade: stable # must be 'stable' to release into candidate/stable channels
 confinement: strict # use 'strict' once you have the right plugs and slots
 compression: lzo
 parts:
-  glib:
-    source: https://gitlab.gnome.org/GNOME/glib.git
-    source-tag: '2.76.1'
+  #glib:
+  #  source: https://gitlab.gnome.org/GNOME/glib.git
+  #  source-tag: '2.76.1'
 # ext:updatesnap
 #   version-format:
 #     ignore-odd-minor: true
-    source-depth: 1
-    plugin: meson
-    meson-parameters:
-      - --prefix=/usr
-      - -Doptimization=3
-      - -Dtests=false
-    override-build: |
-      set -eux
-      craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
-      cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
-    build-packages:
-      - libmount-dev
+  #  source-depth: 1
+  #  plugin: meson
+  #  meson-parameters:
+  #    - --prefix=/usr
+  #    - -Doptimization=3
+  #    - -Dtests=false
+  #  override-build: |
+  #    set -eux
+  #    craftctl default
+  #    mkdir -p $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
+  #    cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
+  #  build-packages:
+  #    - libmount-dev
 #  libadwaita:
 #    after: [rustup]
 #    source: https://gitlab.gnome.org/GNOME/libadwaita.git
@@ -103,7 +103,7 @@ parts:
       - core22
     override-prime: |
       set -eux
-      for snap in "gnome-42-2204" "gnome-42-2204-sdk" "core22"; do
+      for snap in "gnome-42-2204" "gtk-common-themes" "core22"; do
       cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
       done
 slots:
