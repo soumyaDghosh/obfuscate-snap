@@ -55,7 +55,6 @@ parts:
 #    stage:
 #      - -usr/include
   rustup:
-    after: [glib]
     plugin: nil
     build-packages: [wget]
     build-environment:
@@ -74,7 +73,7 @@ parts:
     override-prime: |
       echo 'Skip Prime'
   obfuscate:
-    after: [rustup, glib]
+    after: [rustup]
     # See 'snapcraft plugins'
     plugin: meson
     source: https://gitlab.gnome.org/World/obfuscate.git
