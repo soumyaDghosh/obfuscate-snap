@@ -1,4 +1,4 @@
-name: Build Pull Requests
+name: Build Obfuscate
 
 on:
 - pull_request
@@ -22,7 +22,3 @@ jobs:
       id: build
       with:
         architecture: ${{ matrix.architecture }}
-    - uses: actions/upload-artifact@v3
-      with:
-        name: obfuscate-snap
-        path: ${{ steps.build.outputs.snap }}    
