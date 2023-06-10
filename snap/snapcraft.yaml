@@ -93,7 +93,6 @@ parts:
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - obfuscate
-      - glib
       - rustup
     plugin: nil
     build-snaps:  # List all content-snaps and base snaps you're using here
