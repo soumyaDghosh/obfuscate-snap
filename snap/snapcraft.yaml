@@ -101,7 +101,7 @@ parts:
     parse-info:
       - usr/share/metainfo/com.belmoussaoui.Obfuscate.metainfo.xml
     prime:
-      - snap/obfuscate
+      - -snap/obfuscate
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - obfuscate
