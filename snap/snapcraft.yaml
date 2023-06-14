@@ -86,10 +86,22 @@ parts:
       - PKG_CONFIG_PATH: $CRAFT_STAGE/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/share/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
     meson-parameters:
       - --prefix=/snap/obfuscate/current/usr
+    override-pull: |
+      craftctl default
+      patch -p1 < $CRAFT_PROJECT_DIR/obfuscate.patch
+    override-build: |
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/meta/gui
+      cp -r $CRAFT_PART_INSTALL/snap/obfuscate/current/usr/share/icons $CRAFT_PART_INSTALL/meta/gui/
+      for i in `find $CRAFT_PART_INSTALL/meta/gui/icons -name "*.svg" -o -name "*.png"`; do
+        mv $i "`dirname $i`/snap.$CRAFT_PROJECT_NAME.`basename $i`"
+      done
     organize:
-      snap/obfuscate/current/usr: usr
+      snap/obfuscate/current: .
     parse-info:
       - usr/share/metainfo/com.belmoussaoui.Obfuscate.metainfo.xml
+    prime:
+      - snap/obfuscate
   cleanup:
     after:  # Make this part run last; list all your other parts here
       - obfuscate
