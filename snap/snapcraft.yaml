@@ -14,45 +14,6 @@ grade: stable
 confinement: strict 
 compression: lzo
 parts:
-  #glib:
-  #  source: https://gitlab.gnome.org/GNOME/glib.git
-  #  source-tag: '2.76.1'
-# ext:updatesnap
-#   version-format:
-#     ignore-odd-minor: true
-  #  source-depth: 1
-  #  plugin: meson
-  #  meson-parameters:
-  #    - --prefix=/usr
-  #    - -Doptimization=3
-  #    - -Dtests=false
-  #  override-build: |
-  #    set -eux
-  #    craftctl default
-  #    mkdir -p $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
-  #    cp $CRAFT_PART_INSTALL/usr/bin/{gio-querymodules,glib-compile-schemas} $CRAFT_PART_INSTALL/usr/lib/$CRAFT_ARCH_TRIPLET/glib-2.0/
-  #  build-packages:
-  #    - libmount-dev
-#  libadwaita:
-#    after: [rustup]
-#    source: https://gitlab.gnome.org/GNOME/libadwaita.git
-#    source-tag: '1.3.1'
-#    plugin: meson
-#    meson-parameters:
-#      - --prefix=/usr
-#      - -Doptimization=3
-#      - -Ddebug=true
-#      - -Dintrospection=enabled
-#      - -Dvapi=true
-#      - -Dtests=false
-#      - -Dexamples=false
-#    build-packages:
-#      - sassc
-#    override-pull: |
-#      craftctl default
-#      sed -e 's/-W\(format-nonliteral\)\b/-Wno-\1/g' -i meson.build
-#    stage:
-#      - -usr/include
   rustup:
     plugin: nil
     build-packages: [wget]
