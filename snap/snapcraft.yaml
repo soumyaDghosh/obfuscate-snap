@@ -10,9 +10,11 @@ architectures:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
+
 grade: stable 
 confinement: strict 
 compression: lzo
+
 parts:
   rustup:
     plugin: nil
@@ -30,11 +32,10 @@ parts:
       for i in `ls $RUSTUP_HOME/bin/`; do
         ln -s ../share/rust/bin/$i $CRAFT_PART_INSTALL/usr/bin/$i
       done
-    override-prime: |
-      echo 'Skip Prime'
+    override-prime: ''
+
   obfuscate:
     after: [rustup]
-    # See 'snapcraft plugins'
     plugin: meson
     source: https://gitlab.gnome.org/World/obfuscate.git
     source-depth: 1
@@ -42,50 +43,28 @@ parts:
     build-environment:
       - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
       - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
-      - PKG_CONFIG_PATH: $CRAFT_STAGE/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/$CRAFT_ARCH_TRIPLET/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/lib/pkgconfig:/snap/gnome-42-2204-sdk/current/usr/share/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}
+      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT 
     meson-parameters:
       - --prefix=/snap/obfuscate/current/usr
     override-pull: |
       craftctl default
-      patch -p1 < $CRAFT_PROJECT_DIR/obfuscate.patch
-    override-build: |
-      craftctl default
-      mkdir -p $CRAFT_PART_INSTALL/meta/gui
-      cp -r $CRAFT_PART_INSTALL/snap/obfuscate/current/usr/share/icons $CRAFT_PART_INSTALL/meta/gui/
-      for i in `find $CRAFT_PART_INSTALL/meta/gui/icons -name "*.svg" -o -name "*.png"`; do
-        mv $i "`dirname $i`/snap.$CRAFT_PROJECT_NAME.`basename $i`"
-      done
+      sed -i 's|https://gitlab.gnome.org/World/obfuscate/|https://github.com/soumyaDghosh/obfuscate-snap/|g' ${CRAFT_PART_SRC}/src/application.rs
     organize:
       snap/obfuscate/current: .
     parse-info:
       - usr/share/metainfo/com.belmoussaoui.Obfuscate.metainfo.xml
     prime:
       - -snap/obfuscate
-  cleanup:
-    after:  # Make this part run last; list all your other parts here
-      - obfuscate
-      - rustup
-    plugin: nil
-    build-snaps:  # List all content-snaps and base snaps you're using here
-      - gnome-42-2204
-      - gtk-common-themes
-      - core22
-    override-prime: |
-      set -eux
-      for snap in "gnome-42-2204" "gtk-common-themes" "core22"; do
-      cd "/snap/$snap/current" && find . -type f,l -exec rm -f "$SNAPCRAFT_PRIME/{}" \;
-      done
+
 slots:
   obfuscate:
     interface: dbus
     bus: session
     name: com.belmoussaoui.Obfuscate
+
 apps:
   obfuscate:
     command: usr/bin/obfuscate
     extensions: [gnome]
     common-id: com.belmoussaoui.Obfuscate
     desktop: usr/share/applications/com.belmoussaoui.Obfuscate.desktop
-    plugs:
-      - mount-observe
