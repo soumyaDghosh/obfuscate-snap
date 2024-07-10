@@ -47,3 +47,5 @@ apps:
     extensions: [gnome]
     common-id: com.belmoussaoui.Obfuscate
     desktop: usr/share/applications/com.belmoussaoui.Obfuscate.desktop
+    plugs:
+      - home
