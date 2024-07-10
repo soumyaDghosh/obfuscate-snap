@@ -1,38 +1,22 @@
 name: obfuscate 
-base: core22 
-version: '0.0.9'  
+base: core24 
 adopt-info: obfuscate
-license: GPL-3.0+
 issues: https://github.com/soumyaDghosh/obfuscate-snap/issues
-source-code: https://gitlab.gnome.org/World/obfuscate
-website: https://github.com/soumyaDghosh/obfuscate-snap
-architectures:
-  - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
-
 grade: stable 
 confinement: strict 
 compression: lzo
+platforms:
+  amd64:
+  arm64:
+  armhf:
 
 parts:
   rustup:
-    plugin: nil
-    build-packages: [wget]
-    build-environment:
-      - RUSTUP_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_HOME: $CRAFT_PART_INSTALL/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT
-    override-pull: |
-      wget https://sh.rustup.rs -O $CRAFT_PART_SRC/rustup-init.sh
-      chmod +x $CRAFT_PART_SRC/rustup-init.sh
-    override-build: |
-      $CRAFT_PART_SRC/rustup-init.sh -y --no-modify-path
-      mkdir -p $CRAFT_PART_INSTALL/usr/bin
-      for i in `ls $RUSTUP_HOME/bin/`; do
-        ln -s ../share/rust/bin/$i $CRAFT_PART_INSTALL/usr/bin/$i
-      done
-    override-prime: ''
+    plugin: rust
+    source: .
+    rust-channel: "1.76"
+    override-build: ""
+    override-prime: ""
 
   obfuscate:
     after: [rustup]
@@ -41,14 +25,9 @@ parts:
     source-depth: 1
     source-tag: '0.0.10'
     build-environment:
-      - RUSTUP_HOME: $CRAFT_STAGE/usr/share/rust
-      - CARGO_HOME: $CRAFT_STAGE/usr/share/rust
-      - CARGO_BUILD_JOBS: $CRAFT_PARALLEL_BUILD_COUNT 
+      - PATH: ${HOME}/.cargo/bin:${PATH}
     meson-parameters:
       - --prefix=/snap/obfuscate/current/usr
-    override-pull: |
-      craftctl default
-      sed -i 's|https://gitlab.gnome.org/World/obfuscate/|https://github.com/soumyaDghosh/obfuscate-snap/|g' ${CRAFT_PART_SRC}/src/application.rs
     organize:
       snap/obfuscate/current: .
     parse-info:
